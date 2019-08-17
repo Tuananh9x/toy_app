@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+ has_many :microposts, dependent: :destroy
  attr_accessor :remember_token, :activation_token
  before_save   :downcase_email
  before_create :create_activation_digest
@@ -42,6 +43,9 @@ validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
   # Sends activation email.
   def send_activation_email
     UserMailer.account_activation(self).deliver_now
+  end
+ def feed
+    Micropost.where("user_id = ?", id)
   end
 
 
